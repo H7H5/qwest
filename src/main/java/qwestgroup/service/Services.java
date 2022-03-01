@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import qwestgroup.dao.DaoINT;
 import qwestgroup.dao.Dao;
-import qwestgroup.model.Purchare;
+import qwestgroup.model.Purchase;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -29,17 +29,17 @@ public class Services implements ServiceINT {
     }
 
     @Override
-    public List<Purchare> allPurchare() {
+    public List<Purchase> allPurchare() {
         return dao.allPurchare();
     }
 
     @Override
-    public List<Purchare> allPurchareBySection() {       //  /parts" /loadParts"  purchares
-        List<Purchare> allPurchares = allPurchare();
-        List<Purchare> purcharesSection = new ArrayList<>();
-        for(int i = 0; i<allPurchares.size();i++){
-            if(allPurchares.get(i).getGroup()==0){
-                purcharesSection.add(allPurchares.get(i));
+    public List<Purchase> allPurchareBySection() {       //  /parts" /loadParts"  purchares
+        List<Purchase> allPurchases = allPurchare();
+        List<Purchase> purcharesSection = new ArrayList<>();
+        for(int i = 0; i< allPurchases.size(); i++){
+            if(allPurchases.get(i).getGroup()==0){
+                purcharesSection.add(allPurchases.get(i));
             }
         }
         Collections.sort(purcharesSection, new ComparatorString());
@@ -47,26 +47,26 @@ public class Services implements ServiceINT {
     }
 
     @Override
-    public Purchare GetPurchareBySelection(String code) {      // /group/
+    public Optional<Purchase> GetPurchareBySelection(String code) {      // /group/
         int array[] = FindSection(code);
-        List<Purchare> purchares = allPurchare();
-        for(int i = 0; i<purchares.size();i++){
-            if(purchares.get(i).getSection()==array[0]&&purchares.get(i).getGroup()==0){
-                return purchares.get(i);
+        List<Purchase> purchases = allPurchare();
+        for(int i = 0; i< purchases.size(); i++){
+            if(purchases.get(i).getSection()==array[0]&& purchases.get(i).getGroup()==0){
+                return Optional.ofNullable(purchases.get(i));
             }
         }
         return null;
     }
 
     @Override
-    public List<Purchare> PurcharesByGroup(String s) {
+    public List<Purchase> PurchasesByGroup(String s) {
         int arr[] = FindSection(s);
-        List<Purchare> allPurchares = allPurchare();
-        List<Purchare> purcharesGroup = new ArrayList<>();
-        for(int i = 0; i < allPurchares.size();i++){
-            if(allPurchares.get(i).getSection()==arr[0] && allPurchares.get(i).getClas()==0
-                    && allPurchares.get(i).getGroup()!=0){
-                purcharesGroup.add(allPurchares.get(i));
+        List<Purchase> allPurchases = allPurchare();
+        List<Purchase> purcharesGroup = new ArrayList<>();
+        for(int i = 0; i < allPurchases.size(); i++){
+            if(allPurchases.get(i).getSection()==arr[0] && allPurchases.get(i).getClas()==0
+                    && allPurchases.get(i).getGroup()!=0){
+                purcharesGroup.add(allPurchases.get(i));
             }
         }
         Collections.sort(purcharesGroup, new ComparatorString());
@@ -74,53 +74,48 @@ public class Services implements ServiceINT {
     }
 
     @Override
-    public Purchare GetPurchareByGroup(String code) {
-        int array[] = FindSection(code);
-        List<Purchare> purchares = PurcharesByGroup(code);
-        for(int i = 0; i<purchares.size();i++){
-            if(purchares.get(i).getSection()==array[0]&&purchares.get(i).getGroup()==array[1]){
-                return purchares.get(i);
-            }
-        }
-        return null;
+    public Optional<Purchase> GetPurchaseByGroup(String code) {
+        int group = getGroup(code);
+        int section = getSection(code);
+        List<Purchase> purchases = PurchasesByGroup(code);
+        return  purchases.stream()
+                .filter(purchase -> purchase.getSection() == section && purchase.getGroup() == group)
+                .findAny();
     }
 
     @Override
-    public List<Purchare> PurcharesByClass(String s) {
-        List<Purchare> purchares = allPurchare();
-        List<Purchare> purcharesClass = new ArrayList<>();
+    public List<Purchase> PurchasesByClass(String s) {
+        List<Purchase> purchases = allPurchare();
+        List<Purchase> purcharesClasses = new ArrayList<>();
         int arr[] = FindSection(s);
-        for(int i = 0; i<purchares.size();i++){
-            if(purchares.get(i).getSection()==arr[0] && purchares.get(i).getGroup()==arr[1]
-                    && purchares.get(i).getClas()!=0&& purchares.get(i).getCategory()==0){
-                purcharesClass.add(purchares.get(i));
+        for(int i = 0; i< purchases.size(); i++){
+            if(purchases.get(i).getSection()==arr[0] && purchases.get(i).getGroup()==arr[1]
+                    && purchases.get(i).getClas()!=0&& purchases.get(i).getCategory()==0){
+                purcharesClasses.add(purchases.get(i));
             }
         }
-        Collections.sort(purcharesClass, new ComparatorString());
-        return purcharesClass;
+        Collections.sort(purcharesClasses, new ComparatorString());
+        return purcharesClasses;
     }
 
     @Override
-    public Purchare GetPurchareByClass(String code) {
-        int array[] = FindSection(code);
-        List<Purchare> purchares = PurcharesByClass(code);
-        for(int i = 0; i<purchares.size();i++){
-            if(purchares.get(i).getClas()==array[2]){
-                return purchares.get(i);
-            }
-        }
-        return null;
+    public Optional<Purchase> GetPurchaseByClass(String code) {
+        final int clazz = getClass(code);
+        List<Purchase> purchases = PurchasesByClass(code);
+        return  purchases.stream()
+                .filter(purchase -> purchase.getClas() == clazz)
+                .findAny();
     }
 
     @Override
-    public List<Purchare> PurcharesByCategory(String s) {
-        List<Purchare> purchares = allPurchare();
-        List<Purchare> purcharesCategory = new ArrayList<>();
+    public List<Purchase> PurcharesByCategory(String s) {
+        List<Purchase> purchases = allPurchare();
+        List<Purchase> purcharesCategory = new ArrayList<>();
         int arr[] = FindSection(s);
-        for(int i = 0; i<purchares.size();i++){
-            if(purchares.get(i).getSection()==arr[0] && purchares.get(i).getGroup()==arr[1]
-                    && purchares.get(i).getClas()==arr[2] &&  purchares.get(i).getCategory()!=0){
-                purcharesCategory.add(purchares.get(i));
+        for(int i = 0; i< purchases.size(); i++){
+            if(purchases.get(i).getSection()==arr[0] && purchases.get(i).getGroup()==arr[1]
+                    && purchases.get(i).getClas()==arr[2] &&  purchases.get(i).getCategory()!=0){
+                purcharesCategory.add(purchases.get(i));
             }
         }
         Collections.sort(purcharesCategory, new ComparatorString());
@@ -128,8 +123,8 @@ public class Services implements ServiceINT {
     }
 
     @Override
-    public void add(List<Purchare> purchares) {
-       dao.add(purchares);
+    public void add(List<Purchase> purchases) {
+       dao.add(purchases);
     }
 
     @Override
@@ -138,12 +133,12 @@ public class Services implements ServiceINT {
     }
 
     @Override
-    public Purchare getById(int id) {
+    public Purchase getById(int id) {
         return dao.getById(id);
     }
 
     public void parseJSON(String server) {
-        List<Purchare> purchares = new ArrayList<>();
+        List<Purchase> purchases = new ArrayList<>();
         String answerHTTP;
         URL url;
         HttpsURLConnection urlConnection = null;
@@ -160,21 +155,21 @@ public class Services implements ServiceINT {
                     while(keys.hasNext()) {
                         String currentDynamicKey = (String)keys.next();
                         String name = questionMark.getString(currentDynamicKey);
-                        Purchare purchare = new Purchare();
-                        purchare.setId(AUTO_ID.getAndIncrement());
+                        Purchase purchase = new Purchase();
+                        purchase.setId(AUTO_ID.getAndIncrement());
 
-                        purchare.setCode(currentDynamicKey);
-                        purchare.setName(name);
+                        purchase.setCode(currentDynamicKey);
+                        purchase.setName(name);
                         int array[] = FindSection(currentDynamicKey);
-                        purchare.setSection(array[0]);
-                        purchare.setGroup(array[1]);
-                        purchare.setClas(array[2]);
-                        purchare.setCategory(array[3]);
-                        purchares.add(purchare);
+                        purchase.setSection(array[0]);
+                        purchase.setGroup(array[1]);
+                        purchase.setClas(array[2]);
+                        purchase.setCategory(array[3]);
+                        purchases.add(purchase);
 
                     }
-                    //System.out.println(purchares.size());
-                    add(purchares);
+                    //System.out.println(purchases.size());
+                    add(purchases);
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -209,6 +204,23 @@ public class Services implements ServiceINT {
             }
         }
         return response.toString();
+    }
+
+    private int getSection(String code){
+        int array[] = FindSection(code);
+        return array[0];
+    }
+    private int getGroup(String code){
+        int array[] = FindSection(code);
+        return array[1];
+    }
+    private int getClass(String code){
+        int array[] = FindSection(code);
+        return array[2];
+    }
+    private int getCategory(String code){
+        int array[] = FindSection(code);
+        return array[3];
     }
 
     int[] FindSection(String s){

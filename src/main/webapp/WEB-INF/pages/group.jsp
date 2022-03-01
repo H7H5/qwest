@@ -13,16 +13,16 @@
 </head>
 <body>
 <h3><a href="/showDB/">back</a></h3>
-<h2>${currentPurchare.code} ${currentPurchare.name}</h2>
+<h2>${currentPurchare.get().getCode()} ${currentPurchare.get().getName()}</h2>
 <table>
     <tr>
         <th>code</th>
         <th>name</th>
     </tr>
-    <c:forEach var="purchare" items="${purchareslist}">
+    <c:forEach var="purchase" items="${purchareslist}">
         <tr>
-            <td><a href="/class/${purchare.code}">${purchare.code}</a></td>
-            <td>${purchare.name}</td>
+            <td><a href="/class/${purchase.getCode()}">${purchase.getCode()}</a></td>
+            <td>${purchase.getName()}</td>
         </tr>
     </c:forEach>
 </table>

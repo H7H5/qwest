@@ -3,7 +3,7 @@ package qwestgroup.model;
 
 
 
-public class Purchare {
+public class Purchase {
     // 03126000-2 (03 - section), (1 - group), (2 - clas), (6 - category)
     private String code;
     private String name;

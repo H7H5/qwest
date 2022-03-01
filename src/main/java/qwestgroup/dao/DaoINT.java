@@ -1,12 +1,12 @@
 package qwestgroup.dao;
 
-import qwestgroup.model.Purchare;
+import qwestgroup.model.Purchase;
 
 import java.util.List;
 
 public interface DaoINT {
-    List<Purchare> allPurchare();
-    void add(List<Purchare> purchares);
+    List<Purchase> allPurchare();
+    void add(List<Purchase> purchases);
     void deleteAll();
-    Purchare getById(int id);
+    Purchase getById(int id);
 }

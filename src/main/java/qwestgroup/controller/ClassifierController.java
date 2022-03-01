@@ -1,18 +1,18 @@
 package qwestgroup.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import qwestgroup.model.Purchare;
+import qwestgroup.model.Purchase;
+import qwestgroup.service.Attack2;
 import qwestgroup.service.Services;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @ComponentScan(basePackages = "qwestgroup")
@@ -21,6 +21,7 @@ import java.util.List;
 public class ClassifierController {
     private Environment environment;
     private Services service;
+    Attack2 atack = new Attack2();
 
     @Autowired
     public void setEnvironment(Environment environment) {
@@ -31,52 +32,69 @@ public class ClassifierController {
         this.service = service;
     }
 
+
+
+
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView Vocabulary() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("basic");
+        modelAndView.setViewName("home");
         return modelAndView;
     }
+
+    @PostMapping("/select")
+    public String blogPostAdd(@RequestParam String title,
+                              Model model) throws Exception {
+        atack.main1(title);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("select");
+        //modelAndView.addObject("text",text);
+        return "select";
+    }
+
+
     @RequestMapping(value = "/showDB", method = RequestMethod.GET)
     public ModelAndView allPurchareBack() {
-        List<Purchare> purchares = service.allPurchareBySection();
+        List<Purchase> purchases = service.allPurchareBySection();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("purchares");
-        modelAndView.addObject("purchareslist", purchares);
+        modelAndView.addObject("purchareslist", purchases);
         return modelAndView;
     }
     @RequestMapping(value = "/loadParts", method = RequestMethod.GET)
     public ModelAndView allPurchare() {
         service.parseJSON(environment.getRequiredProperty("dataSourceD"));
-        List<Purchare> purchares = service.allPurchareBySection();
+        List<Purchase> purchases = service.allPurchareBySection();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("purchares");
-        modelAndView.addObject("purchareslist", purchares);
+        modelAndView.addObject("purchareslist", purchases);
         return modelAndView;
     }
     @RequestMapping(value = "/group/{code}", method = RequestMethod.GET)
     public ModelAndView code(@PathVariable("code") String code) {
-        Purchare currentPurchare = service.GetPurchareBySelection(code);
-        List<Purchare> purchares = service.PurcharesByGroup(code);
-        return CreateModel("group",currentPurchare,purchares);
+        Optional<Purchase> currentPurchare = service.GetPurchareBySelection(code);
+        List<Purchase> purchases = service.PurchasesByGroup(code);
+        return CreateModel("group",currentPurchare, purchases);
     }
     @RequestMapping(value = "/class/{code}", method = RequestMethod.GET)
     public ModelAndView group(@PathVariable("code") String group) {
-        Purchare currentPurchare = service.GetPurchareByGroup(group);
-        List<Purchare> purchares = service.PurcharesByClass(group);
-        return CreateModel("clas",currentPurchare,purchares);
+        Optional<Purchase> currentPurchare = service.GetPurchaseByGroup(group);
+        //Purchase purchare = currentPurchare.get().getGroup();
+        List<Purchase> purchases = service.PurchasesByClass(group);
+        return CreateModel("clas",currentPurchare, purchases);
     }
     @RequestMapping(value = "/category/{code}", method = RequestMethod.GET)
     public ModelAndView category(@PathVariable("code") String group) {
-        Purchare currentPurchare = service.GetPurchareByClass(group);
-        List<Purchare> purchares = service.PurcharesByCategory(group);
-        return CreateModel("category",currentPurchare,purchares);
+        Optional<Purchase> currentPurchare = service.GetPurchaseByClass(group);
+        List<Purchase> purchases = service.PurcharesByCategory(group);
+        return CreateModel("category",currentPurchare, purchases);
     }
-    private ModelAndView CreateModel(String namePage, Purchare currentPurchare, List<Purchare> purchares){
+    private ModelAndView CreateModel(String namePage, Optional<Purchase> currentPurchare, List<Purchase> purchases){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(namePage);
         modelAndView.addObject("currentPurchare", currentPurchare);
-        modelAndView.addObject("purchareslist", purchares);
+        modelAndView.addObject("purchareslist", purchases);
         return modelAndView;
     }
 }

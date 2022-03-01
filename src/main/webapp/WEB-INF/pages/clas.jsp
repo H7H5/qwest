@@ -12,17 +12,17 @@
     <title>clas</title>
 </head>
 
-<h3><a href="/group/${currentPurchare.code}">back</a></h3>
-<h2> ${currentPurchare.code} ${currentPurchare.name}</h2>
+<h3><a href="/group/${currentPurchare.get().getCode()}">back</a></h3>
+<h2> ${currentPurchare.get().getCode()} ${currentPurchare.get().getName()}</h2>
 <table>
     <tr>
         <th>code</th>
         <th>name</th>
     </tr>
-    <c:forEach var="purchare" items="${purchareslist}">
+    <c:forEach var="purchase" items="${purchareslist}">
         <tr>
-            <td><a href="/category/${purchare.code}">${purchare.code}</a></td>
-            <td>${purchare.name}</td>
+            <td><a href="/category/${purchase.code}">${purchase.code}</a></td>
+            <td>${purchase.name}</td>
         </tr>
     </c:forEach>
 </table>

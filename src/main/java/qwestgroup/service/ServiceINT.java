@@ -1,19 +1,20 @@
 package qwestgroup.service;
 
-import qwestgroup.model.Purchare;
+import qwestgroup.model.Purchase;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ServiceINT {
-    List<Purchare> allPurchare();
-    List<Purchare> allPurchareBySection();
-    List<Purchare> PurcharesByGroup(String code);
-    List<Purchare> PurcharesByClass(String code);
-    List<Purchare> PurcharesByCategory(String code);
-    Purchare GetPurchareBySelection(String code);
-    Purchare GetPurchareByGroup(String code);
-    Purchare GetPurchareByClass(String code);
-    void add(List<Purchare> purchares);
+    List<Purchase> allPurchare();
+    List<Purchase> allPurchareBySection();
+    List<Purchase> PurchasesByGroup(String code);
+    List<Purchase> PurchasesByClass(String code);
+    List<Purchase> PurcharesByCategory(String code);
+    Optional<Purchase> GetPurchareBySelection(String code);
+    Optional<Purchase> GetPurchaseByGroup(String code);
+    Optional<Purchase> GetPurchaseByClass(String code);
+    void add(List<Purchase> purchases);
     void deleteAll();
-    Purchare getById(int id);
+    Purchase getById(int id);
 }

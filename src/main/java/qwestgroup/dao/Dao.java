@@ -2,11 +2,10 @@ package qwestgroup.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
-import qwestgroup.model.Purchare;
+import qwestgroup.model.Purchase;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -43,43 +42,43 @@ public class Dao implements DaoINT {
         }
     }
     @Override
-    public List<Purchare> allPurchare() {
-        List<Purchare> purchares = new ArrayList<>();
+    public List<Purchase> allPurchare() {
+        List<Purchase> purchases = new ArrayList<>();
 
         try {
             Statement statement = connection.createStatement();
             String SQL = "SELECT * FROM general";
             ResultSet resultSet = statement.executeQuery(SQL);
             while (resultSet.next()){
-                Purchare purchare = new Purchare();
-                purchare.setCode(resultSet.getString("code"));
-                purchare.setName(resultSet.getString("name"));
-                purchare.setId(resultSet.getInt("id"));
-                purchare.setSection(resultSet.getInt("section"));
-                purchare.setGroup(resultSet.getInt("groupp"));
-                purchare.setClas(resultSet.getInt("clas"));
-                purchare.setCategory(resultSet.getInt("category"));
-                purchares.add(purchare);
+                Purchase purchase = new Purchase();
+                purchase.setCode(resultSet.getString("code"));
+                purchase.setName(resultSet.getString("name"));
+                purchase.setId(resultSet.getInt("id"));
+                purchase.setSection(resultSet.getInt("section"));
+                purchase.setGroup(resultSet.getInt("groupp"));
+                purchase.setClas(resultSet.getInt("clas"));
+                purchase.setCategory(resultSet.getInt("category"));
+                purchases.add(purchase);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return purchares;
+        return purchases;
     }
 
     @Override
-    public void add(List<Purchare> purchares) {
+    public void add(List<Purchase> purchases) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "insert into general  values (?,?,?,?,?,?,?)");
-            for (int i =1; i<purchares.size();i++) {
-                preparedStatement.setInt(1, purchares.get(i).getId());
-                preparedStatement.setString(2, purchares.get(i).getCode());
-                preparedStatement.setString(3, purchares.get(i).getName());
-                preparedStatement.setInt(4, purchares.get(i).getSection());
-                preparedStatement.setInt(5, purchares.get(i).getGroup());
-                preparedStatement.setInt(6, purchares.get(i).getClas());
-                preparedStatement.setInt(7, purchares.get(i).getCategory());
+            for (int i = 1; i< purchases.size(); i++) {
+                preparedStatement.setInt(1, purchases.get(i).getId());
+                preparedStatement.setString(2, purchases.get(i).getCode());
+                preparedStatement.setString(3, purchases.get(i).getName());
+                preparedStatement.setInt(4, purchases.get(i).getSection());
+                preparedStatement.setInt(5, purchases.get(i).getGroup());
+                preparedStatement.setInt(6, purchases.get(i).getClas());
+                preparedStatement.setInt(7, purchases.get(i).getCategory());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -97,7 +96,7 @@ public class Dao implements DaoINT {
         }
     }
     @Override
-    public Purchare getById(int id) {
+    public Purchase getById(int id) {
         return null;
     }
 }

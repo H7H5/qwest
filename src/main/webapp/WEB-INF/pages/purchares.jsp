@@ -9,7 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>purchares</title>
+    <title>purchases</title>
 </head>
 <body>
 <h2>Розділи</h2>
@@ -18,10 +18,10 @@
         <th>code</th>
         <th>name</th>
     </tr>
-    <c:forEach var="purchare" items="${purchareslist}">
+    <c:forEach var="purchase" items="${purchareslist}">
         <tr>
-            <td><a href="/group/${purchare.code}">${purchare.code}</a></td>
-            <td>${purchare.name}</td>
+            <td><a href="/group/${purchase.code}">${purchase.code}</a></td>
+            <td>${purchase.name}</td>
         </tr>
     </c:forEach>
 </table>
